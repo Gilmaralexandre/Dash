@@ -13,5 +13,3 @@ Projeto cria um dashboard que roda em qualquer navegador.
 
 - O grafico demonstra a quantidade de frutas que foi comercializada em duas cidades.
 - O grafico pode ser alterado ou filtrado
-
-## Caso deseje visualizar o projeto, acesse o link:http://127.0.0.1:8051/
