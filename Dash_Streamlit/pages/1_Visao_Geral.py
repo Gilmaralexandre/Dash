@@ -1,3 +1,5 @@
+# Página Inicial
+
 from pathlib import Path
 from datetime import date, timedelta
 
@@ -24,36 +26,41 @@ df_produtos = df_produtos.rename(columns={'nome': 'produto'})
 df_vendas = df_vendas.reset_index()
 df_vendas = pd.merge(left=df_vendas,
                      right=df_produtos[['produto', 'preco']],
-                     on='produto',  
+                     on='produto',
                      how='left')
 df_vendas = df_vendas.set_index('data')
 df_vendas['comissao'] = df_vendas['preco'] * COMISSAO
 
 data_final_def = df_vendas.index.date.max()
-data_inicial_def = date(year=data_final_def.year, month=data_final_def.month, day=1)
+data_inicial_def = date(year=data_final_def.year,
+                        month=data_final_def.month, day=1)
 data_inicial = st.sidebar.date_input('Data Inicial',
                                      data_inicial_def)
 data_final = st.sidebar.date_input('Data Final',
-                                     data_final_def)
+                                   data_final_def)
 analise_selecionada = st.sidebar.selectbox('Analisar:',
                                            list(selecao_keys.keys()))
 analise_selecionada = selecao_keys[analise_selecionada]
 
-df_vendas_corte = df_vendas[(df_vendas.index.date >= data_inicial) & (df_vendas.index.date <= data_final)]
-df_vendas_corte_anterior = df_vendas[(df_vendas.index.date >= data_inicial - timedelta(days=30)) & (df_vendas.index.date <= data_final - timedelta(days=30))]
+df_vendas_corte = df_vendas[(df_vendas.index.date >= data_inicial) & (
+    df_vendas.index.date <= data_final)]
+df_vendas_corte_anterior = df_vendas[(df_vendas.index.date >= data_inicial - timedelta(
+    days=30)) & (df_vendas.index.date <= data_final - timedelta(days=30))]
 
 st.markdown('# Dashboard de Análise')
 
 col1, col2, col3, col4 = st.columns(4)
 
 valor_vendas = f"R$ {df_vendas_corte['preco'].sum():.2f}"
-dif_metrica = df_vendas_corte['preco'].sum() - df_vendas_corte_anterior['preco'].sum()
+dif_metrica = df_vendas_corte['preco'].sum(
+) - df_vendas_corte_anterior['preco'].sum()
 col1.metric('Valor de vendas no período',
             valor_vendas,
             float(dif_metrica))
 
 quantidade_vendas = df_vendas_corte['preco'].count()
-dif_metrica = df_vendas_corte['preco'].count() - df_vendas_corte_anterior['preco'].count()
+dif_metrica = df_vendas_corte['preco'].count(
+) - df_vendas_corte_anterior['preco'].count()
 col2.metric('Quantidade de vendas no período',
             quantidade_vendas,
             int(dif_metrica))
@@ -77,7 +84,7 @@ venda_dia.name = 'Valor Venda'
 fig = px.line(venda_dia)
 col21.plotly_chart(fig)
 
-fig = px.pie(df_vendas_corte, 
+fig = px.pie(df_vendas_corte,
              names=analise_selecionada,
              values='preco')
 

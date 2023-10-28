@@ -3,3 +3,4 @@ venv
 - launch.json
 scripts
 - build.sh
+__pycache__
